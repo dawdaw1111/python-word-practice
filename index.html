@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python单词拼写练习 Lite</title>
+  <meta name="description" content="离线可用的 Python 单词拼写练习工具，帮助初学者边学编程边记英文。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-orb bg-orb-a" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb-b" aria-hidden="true"></div>
+
+  <main class="app-shell">
+    <section class="phone" id="app-shell">
+      <div class="view-stack">
+        <section class="view is-active" id="view-home" data-view="home">
+          <header class="home-header">
+            <div class="brand-lockup">
+              <div class="brand-mark" aria-hidden="true"><span>Py</span></div>
+              <div>
+                <p class="eyebrow">Python 单词闯关</p>
+                <h1 class="page-title">Python单词拼写练习</h1>
+              </div>
+            </div>
+            <div class="version-chip">Lite</div>
+          </header>
+
+          <section class="card hero-card">
+            <p class="hero-tag">离线即开即学</p>
+            <h2 class="hero-title">边学 Python，边把高频英文单词记住。</h2>
+            <p class="hero-copy">专为初学者设计，看中文、拼英文、立即反馈，关闭网页后下次还能接着练。</p>
+
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="start-btn">开始学习</button>
+              <button class="btn btn-secondary" id="continue-btn">继续学习</button>
+            </div>
+
+            <p class="resume-note" id="resume-note"></p>
+          </section>
+
+          <section class="summary-grid" aria-label="学习概览">
+            <article class="card summary-card">
+              <span class="summary-icon summary-icon-blue" aria-hidden="true"></span>
+              <strong id="summary-learned">0</strong>
+              <span>已学单词</span>
+            </article>
+            <article class="card summary-card">
+              <span class="summary-icon summary-icon-green" aria-hidden="true"></span>
+              <strong id="summary-mastered">0</strong>
+              <span>已掌握</span>
+            </article>
+            <article class="card summary-card">
+              <span class="summary-icon summary-icon-red" aria-hidden="true"></span>
+              <strong id="summary-wrong">0</strong>
+              <span>错题本</span>
+            </article>
+            <article class="card summary-card">
+              <span class="summary-icon summary-icon-gold" aria-hidden="true"></span>
+              <strong id="summary-category">基础入门</strong>
+              <span>当前分类</span>
+            </article>
+          </section>
+
+          <section class="card shortcut-card">
+            <button class="list-link" id="open-wrong-btn">
+              <span>错题复习</span>
+              <span class="link-meta">
+                <span class="count-badge" id="wrong-count-badge">0</span>
+                <span class="link-arrow" aria-hidden="true">›</span>
+              </span>
+            </button>
+            <button class="list-link" id="open-stats-btn">
+              <span>学习统计</span>
+              <span class="link-meta">
+                <span class="count-badge is-muted" id="accuracy-badge">0%</span>
+                <span class="link-arrow" aria-hidden="true">›</span>
+              </span>
+            </button>
+          </section>
+
+          <section class="card category-card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">分类闯关</p>
+                <h2 class="section-title">从基础入门到常见报错词</h2>
+              </div>
+            </div>
+            <div id="category-list" class="category-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="view-study" data-view="study">
+          <header class="study-header">
+            <button class="icon-button" id="study-back-btn" aria-label="返回首页">‹</button>
+            <div class="study-title-wrap">
+              <span class="mode-chip" id="study-mode-chip">分类闯关</span>
+              <h2 class="study-title" id="study-category-title">基础入门</h2>
+            </div>
+            <div class="question-badge" id="study-question-text">第 1 / 10 题</div>
+          </header>
+
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-bar-fill" id="study-progress-fill"></div>
+          </div>
+
+          <section class="card prompt-card">
+            <p class="prompt-label">中文提示</p>
+            <h3 class="prompt-meaning" id="study-meaning">打印；输出</h3>
+            <p class="prompt-tip" id="study-tip">把内容显示到屏幕上。</p>
+          </section>
+
+          <section class="card answer-card">
+            <label class="input-label" for="answer-input">拼出英文单词</label>
+            <input
+              id="answer-input"
+              class="answer-input"
+              type="text"
+              placeholder="请输入英文单词"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            >
+            <p class="input-help" id="input-help">输入会自动忽略大小写和前后空格。</p>
+
+            <div class="answer-actions">
+              <button class="btn btn-secondary" id="skip-btn">跳过</button>
+              <button class="btn btn-primary" id="submit-btn">提交</button>
+            </div>
+          </section>
+
+          <section class="card feedback-card is-hidden" id="feedback-card" aria-live="polite">
+            <div class="feedback-head">
+              <span class="feedback-dot" id="feedback-dot" aria-hidden="true"></span>
+              <div>
+                <h3 class="feedback-title" id="feedback-title">回答正确！</h3>
+                <p class="feedback-note" id="feedback-note"></p>
+              </div>
+            </div>
+
+            <div class="feedback-answer-row">
+              <span>正确答案</span>
+              <strong id="feedback-word">print</strong>
+            </div>
+
+            <p class="feedback-desc" id="feedback-desc"></p>
+
+            <div class="code-block">
+              <code id="feedback-example"></code>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="view-wrongbook" data-view="wrongbook">
+          <header class="panel-header">
+            <p class="eyebrow">Wrong Book</p>
+            <h2 class="page-title">错题本</h2>
+            <p class="panel-copy">拼错过的单词都会留在这里，方便随时回头补练。</p>
+          </header>
+
+          <section class="card action-card">
+            <div class="action-summary">
+              <div>
+                <strong id="wrong-total">0</strong>
+                <span>当前错题</span>
+              </div>
+              <div>
+                <strong id="wrong-mastered">0</strong>
+                <span>已掌握待清理</span>
+              </div>
+            </div>
+
+            <div class="stack-actions">
+              <button class="btn btn-primary" id="review-all-wrong-btn">开始错题复习</button>
+              <button class="btn btn-secondary" id="clear-mastered-btn">清理已掌握</button>
+            </div>
+          </section>
+
+          <div id="wrong-list" class="stack-list"></div>
+        </section>
+
+        <section class="view" id="view-stats" data-view="stats">
+          <header class="panel-header">
+            <p class="eyebrow">Learning Stats</p>
+            <h2 class="page-title">学习统计</h2>
+            <p class="panel-copy">把你的进度、正确率和分类完成度都整理成一眼能看懂的面板。</p>
+          </header>
+
+          <section class="stats-grid">
+            <article class="card stat-card stat-card-blue">
+              <strong id="stats-total-words">50</strong>
+              <span>总词数</span>
+            </article>
+            <article class="card stat-card stat-card-green">
+              <strong id="stats-learned-words">0</strong>
+              <span>已学词数</span>
+            </article>
+            <article class="card stat-card stat-card-red">
+              <strong id="stats-wrong-words">0</strong>
+              <span>错题数</span>
+            </article>
+            <article class="card stat-card stat-card-gold">
+              <strong id="stats-streak">0天</strong>
+              <span>连续练习</span>
+            </article>
+          </section>
+
+          <section class="card progress-card">
+            <div class="progress-ring-wrap">
+              <div class="progress-ring" id="completion-ring">
+                <div class="progress-ring-inner">
+                  <strong id="completion-rate">0%</strong>
+                  <span>完成度</span>
+                </div>
+              </div>
+
+              <div class="progress-meta">
+                <div class="progress-meta-item">
+                  <span>已掌握</span>
+                  <strong id="stats-mastered-words">0 / 50</strong>
+                </div>
+                <div class="progress-meta-item">
+                  <span>总正确率</span>
+                  <strong id="stats-accuracy">0%</strong>
+                </div>
+                <div class="progress-meta-item">
+                  <span>当前分类</span>
+                  <strong id="stats-current-category">基础入门</strong>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card category-progress-card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Category Progress</p>
+                <h2 class="section-title">分类完成度</h2>
+              </div>
+            </div>
+            <div id="stats-category-list" class="category-progress-list"></div>
+          </section>
+        </section>
+      </div>
+
+      <nav class="bottom-nav" id="bottom-nav" aria-label="主导航">
+        <div class="nav-brand" aria-hidden="true">
+          <div class="brand-mark nav-brand-mark"><span>Py</span></div>
+          <div>
+            <p class="eyebrow">Desktop Workspace</p>
+            <strong class="nav-brand-title">PyWord Lite</strong>
+            <p class="nav-brand-copy">Python 单词拼写练习</p>
+          </div>
+        </div>
+        <button class="nav-item is-active" data-target="home">
+          <span class="nav-icon" aria-hidden="true">⌂</span>
+          <span>首页</span>
+        </button>
+        <button class="nav-item" data-target="wrongbook">
+          <span class="nav-icon" aria-hidden="true">✦</span>
+          <span>错题本</span>
+          <span class="nav-badge is-hidden" id="nav-wrong-badge">0</span>
+        </button>
+        <button class="nav-item" data-target="stats">
+          <span class="nav-icon" aria-hidden="true">▤</span>
+          <span>统计</span>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
